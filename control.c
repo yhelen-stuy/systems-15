@@ -79,6 +79,11 @@ int main( int argc, const char *argv[] ) {
 
     else if (!strcmp(argv[1], "-r")) {
         semdescriptor = semget(semkey, 0, 0);
+        struct sembuf op;
+        op.sem_num = 0;
+        op.sem_op = -1;
+        op.sem_flg = SEM_UNDO;
+        semop(semdescriptor, &op, 1);
         val = semctl(semdescriptor, 0,  IPC_RMID);
         if (val == -1) {
             fprintf(stderr, "ERROR: %s\n", strerror(errno));
